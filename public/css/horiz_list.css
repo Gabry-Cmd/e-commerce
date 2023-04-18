@@ -1,0 +1,12 @@
+ul.horiz_list {
+    width: 100%;
+    padding-left: 0; /* Annulla il padding predefinito (40px) */
+    list-style-type: none;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+ul.horiz_list > li {
+    display: inline-block;
+    text-align: center;
+}

@@ -1,0 +1,12 @@
+/* Contorni per le form della pagina di login o per i popup */
+.box_outer {
+    border: 1px solid black;
+    background-color: #bae6b2;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+}
+
+.box_inner {
+    border: 1px solid black;
+}

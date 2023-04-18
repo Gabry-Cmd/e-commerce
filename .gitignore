@@ -1,0 +1,7 @@
+*.txt
+*.uxf
+*.ini
+*.py
+composer.json
+composer.lock
+vendor/
