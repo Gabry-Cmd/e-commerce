@@ -94,7 +94,7 @@
                                 '.ucfirst($p['name']).' '.$p['unitPrice'].' €
                                 <form action="catalog.php?'.$querystring.'" method="post">
                                     <input type="submit" name="+'.$p['ID'].'" value="+">
-                                </form>');
+                                ');
 
                             if(isset($_POST['+'.$p['ID']])){
                                 $_SESSION['userCart'][$p['ID']] += 1;
@@ -108,9 +108,7 @@
                             }
                             echo($_SESSION['userCart'][$p['ID']]);
                     
-                            echo('<form action="catalog.php?'.$querystring.'" method="post">
-                                <input type="submit" name="-'.$p['ID'].'" value="-">
-                                <input type="hidden" value="1">
+                            echo('<input type="submit" name="-'.$p['ID'].'" value="-">
                                 </form>');
                         }
                         echo "</td>";

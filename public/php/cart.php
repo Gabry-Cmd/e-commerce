@@ -4,7 +4,7 @@
     include('../../php/connect2DB.php');
     include('../../php/global_configs.php');
 
-    isset($_SESSION['email']) or die('Non autorizzato');
+    isset($_SESSION['email']) or die('E\' necessario accedere per poter utilizzare questa funzionalità!');
 ?>
 
 <?php

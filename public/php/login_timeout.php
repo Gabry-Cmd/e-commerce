@@ -3,10 +3,11 @@
     $connected_query = "";
 
     session_start();
-    if(isset($_SERVER['query_string']) and
-        $_SERVER['query_string'] == "exit")
+    if(isset($_GET['exit']))
     {
         unset($_SESSION['connected']);
+        session_destroy();
+        session_start();
     }
     if(isset($_SESSION['connected'])){
         $connected_text = "Esci";

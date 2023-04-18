@@ -85,7 +85,7 @@
     // Restituisce lo storico degli acquisti di un'utente dal DB
     function query_purchase_history($dbms){
         $q = '
-        SELECT orders.date, orderdetails.unitPrice, orderdetails.quantity, products.name FROM
+        SELECT orders.ID, orders.date, orderdetails.unitPrice, orderdetails.quantity, products.name FROM
         (
             (
                 (
@@ -94,6 +94,21 @@
                 INNER JOIN orderdetails ON(orders.ID=orderdetails.id_order)
             )
             INNER JOIN products ON(products.ID=orderdetails.id_product)
+        )
+        WHERE customers.email="gd@mail.com";
+        ';
+
+        $res = mysqli_query($dbms, $q);
+        return $res->fetch_all();
+    }
+
+    // Restituisce un array associativo con
+    // gli id e le date degli ordini (metadati)
+    function query_purchase_history_orders($dbms){
+        $q = '
+        SELECT orders.ID, orders.date FROM
+        (
+            customers INNER JOIN orders ON(customers.ID=orders.id_customer)
         )
         WHERE customers.email="gd@mail.com";
         ';
