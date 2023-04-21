@@ -95,7 +95,7 @@
             )
             INNER JOIN products ON(products.ID=orderdetails.id_product)
         )
-        WHERE customers.email="gd@mail.com";
+        WHERE customers.email="'.$_SESSION['email'].'";
         ';
 
         $res = mysqli_query($dbms, $q);
@@ -110,7 +110,7 @@
         (
             customers INNER JOIN orders ON(customers.ID=orders.id_customer)
         )
-        WHERE customers.email="gd@mail.com";
+        WHERE customers.email="'.$_SESSION['email'].'";
         ';
 
         $res = mysqli_query($dbms, $q);
