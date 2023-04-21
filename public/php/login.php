@@ -2,6 +2,7 @@
 <?php
     include('login_timeout.php');
     include('../../php/connect2DB.php');
+    include('../../php/global_configs.php');
 
     // Restituisce il record di un utente
     // prende la password in chiaro
