@@ -50,7 +50,9 @@
     if(isset($_POST['login_name']) and isset($_POST['login_password'])){
         $usr = $_POST['login_name'];
         $pwd = $_POST['login_password'];
-        $n_rows = mysqli_num_rows(query_user($dbconn, $usr, $pwd));
+        $q_res = query_user($dbconn, $usr, $pwd);
+        $n_rows = mysqli_num_rows($q_res);
+        $q_user_data = $q_res->fetch_assoc();
 
         if($n_rows == 1){
             echo "<script>alert('Accesso effettuato')</script>";
@@ -63,6 +65,7 @@
             $_SESSION['access_date'] = time();
             $_SESSION['connected'] = TRUE;
             $_SESSION['email'] = $usr;
+            $_SESSION['ID'] = $q_user_data['ID'];
 
             unset($_POST['login_name']);
             unset($_POST['login_password']);

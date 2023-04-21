@@ -9,6 +9,53 @@
 
 <?php
     if(!isset($_SESSION['userCart']) or isset($_POST['payed'])){
+        if(isset($_POST['payed'])){
+            // Devo inserire un'ordine
+            // L'ordine ha dei dettagli d'ordine associati, uno per ogni prodotto selezionato
+            // L'ordine è associato a un cliente
+            // L'ID del cliente è nella sessione, inserisco l'ordine,
+            // poi ottengo gli id dei prodotti dal carrello, ottengo i prodotti dal DB sapendo gli id,
+            // infine inserisco i dettagli d'ordine per ogni prodotto acquistato
+            $current_date = date("Y-m-d");
+            $order = '
+                INSERT INTO orders (date, id_customer) VALUES (\''.$current_date.'\', '.$_SESSION['ID'].');
+            ';
+            // Cosa succede se ID va in overflow?
+            $get_order_id = '
+                SELECT ID from orders where date=\''.$current_date.'\' AND id_customer='.$_SESSION['ID'].' ORDER BY ID DESC;
+            ';
+
+            mysqli_query($dbconn, $order) or die('<script>alert("Impossibile completare l\'ordine, error=1")</script>');
+            $order_id = (mysqli_query($dbconn, $get_order_id))->fetch_assoc()['ID'] or die('<script>alert("Impossibile completare l\'ordine, error=2")</script>');
+
+            // Ottengo gli id dei prodotti nel carrello
+            $ids = [];
+            for($i=0; $i<query_num_prods($dbconn); $i++){
+                if(isset($_SESSION['userCart'][$i])){
+                    if($_SESSION['userCart'][$i] > 0){
+                        $ids[count($ids)] = $i;
+                    }
+                }
+            }
+
+            $prods = query_products_in($dbconn, $ids);
+
+            for($i=0; $i<count($ids); $i++){
+                $p = $prods->fetch_assoc();
+                $order_detail = '
+                    INSERT INTO orderdetails (id_product, id_order, unitPrice, quantity, discount) VALUES ('.$ids[$i].', '.$order_id.', '.$p['unitPrice'].', '.$_SESSION['userCart'][$ids[$i]].', 0.0);
+                ';
+                if(mysqli_query($dbconn, $order_detail) == false){
+                    echo mysqli_error($dbconn).'<br>';
+                    $del_order = '
+                        DELETE FROM orders WHERE ID='.$order_id.' AND date=\''.$current_date.'\' and id_customer='.$_SESSION['ID'].'
+                    ';
+                    mysqli_query($dbconn, $del_order);
+                    echo $order_detail.'<br>';
+                }
+            }
+        }
+
         $_SESSION['userCart'] = [];
     }
 ?>

@@ -34,9 +34,9 @@
                             GROUP BY id_product
                         ) AS t1
                         ON (t1.ID=t2.ID)
-                    ORDER BY qta DESC LIMIT ?, ?) AS pop_desc
+                    ) AS pop_desc
                     LEFT JOIN products ON (pop_desc.ID=products.ID)
-                )';
+                ) ORDER BY qta DESC LIMIT ?, ?';
                 break;
             
             // todo: Ordina per popolarità

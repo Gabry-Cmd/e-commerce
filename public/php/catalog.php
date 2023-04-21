@@ -43,10 +43,10 @@
                     <form method="get" action="catalog.php">
                         <input id="searchbar" name="search" placeholder="Cerca un prodotto" value="'.$filtro_ricerca.'">
                         <select name="order_by" id="order_by">
-                            <option value="">Nessun filtro</option>
-                            <option value="price_asc">Prezzo crescente</option>
-                            <option value="price_desc">Prezzo decrescente</option>
-                            <option value="popularity_desc">Più acquistato</option>
+                            <option value="" '.($_GET['order_by']=='' ? 'selected' : '').'>Nessun filtro</option>
+                            <option value="price_asc" '.($_GET['order_by']=='price_asc' ? 'selected' : '').'>Prezzo crescente</option>
+                            <option value="price_desc" '.($_GET['order_by']=='price_desc' ? 'selected' : '').'>Prezzo decrescente</option>
+                            <option value="popularity_desc" '.($_GET['order_by']=='popularity_desc' ? 'selected' : '').'>Più acquistato</option>
                         </select>
                 ';
                 $n_prods = query_num_prods($dbconn);
