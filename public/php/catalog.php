@@ -28,13 +28,13 @@
 
                 $page = 0;
                 if(isset($_GET['page'])){
-                    $page = $_GET['page'];
+                    $page = $htmlpurifier->purify($_GET['page']);
                     $querystring = $querystring.'page='.$page.'&';
                 }
 
                 $order_by = '';
                 if(isset($_GET['order_by'])){
-                    $order_by = $_GET['order_by'];
+                    $order_by = $htmlpurifier->purify($_GET['order_by']);
                     $querystring = $querystring.'order_by='.$order_by.'&';
                 }
             
@@ -43,10 +43,10 @@
                     <form method="get" action="catalog.php">
                         <input id="searchbar" name="search" placeholder="Cerca un prodotto" value="'.$filtro_ricerca.'">
                         <select name="order_by" id="order_by">
-                            <option value="" '.($_GET['order_by']=='' ? 'selected' : '').'>Nessun filtro</option>
-                            <option value="price_asc" '.($_GET['order_by']=='price_asc' ? 'selected' : '').'>Prezzo crescente</option>
-                            <option value="price_desc" '.($_GET['order_by']=='price_desc' ? 'selected' : '').'>Prezzo decrescente</option>
-                            <option value="popularity_desc" '.($_GET['order_by']=='popularity_desc' ? 'selected' : '').'>Più acquistato</option>
+                            <option value="" '.($order_by=='' ? 'selected' : '').'>Nessun filtro</option>
+                            <option value="price_asc" '.($order_by=='price_asc' ? 'selected' : '').'>Prezzo crescente</option>
+                            <option value="price_desc" '.($order_by=='price_desc' ? 'selected' : '').'>Prezzo decrescente</option>
+                            <option value="popularity_desc" '.($order_by=='popularity_desc' ? 'selected' : '').'>Più acquistato</option>
                         </select>
                 ';
                 $n_prods = query_num_prods($dbconn);

@@ -32,7 +32,7 @@
         if(mysqli_num_rows(query_user($dbconn, $usr, $pwd)) == 1){
             echo "<script>alert('Impossibile continuare, l\'utente è già registrato!')</script>";
         } else{
-            $pwd = hex2bin(hash('sha256', $_POST['register_password']));
+            $pwd = hex2bin(hash('sha256', $pwd));
             $stmt->bind_param("ss", $usr, $pwd);
             $stmt->execute();
             $stmt->free_result();
@@ -48,8 +48,8 @@
 <?php
     // Login
     if(isset($_POST['login_name']) and isset($_POST['login_password'])){
-        $usr = $_POST['login_name'];
-        $pwd = $_POST['login_password'];
+        $usr = $htmlpurifier->purify($_POST['login_name']);
+        $pwd = $htmlpurifier->purify($_POST['login_password']);
         $q_res = query_user($dbconn, $usr, $pwd);
         $n_rows = mysqli_num_rows($q_res);
         $q_user_data = $q_res->fetch_assoc();
