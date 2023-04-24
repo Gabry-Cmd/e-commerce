@@ -33,7 +33,7 @@
                     echo 'Ordine #'.$orders_meta[$id][0].' ('.$orders_meta[$id][1].'):<br>';
                     for($i=0; $i<count($rows); $i++){
                         if($rows[$i][0] == $orders_meta[$id][0]){
-                            echo $rows[$i][4].' x '.$rows[$i][3].' da '.$rows[$i][2].' €<br>';
+                            echo "<a href='/php/catalog.php?search=".$rows[$i][4]."'>".$rows[$i][4]."</a>".' x '.$rows[$i][3].' da '.$rows[$i][2].' €<br>';
                             $tot += $rows[$i][2];
                         }
                     }

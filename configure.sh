@@ -1,1 +1,2 @@
 composer require ezyang/htmlpurifier
+composer require phpmailer/phpmailer
