@@ -3,6 +3,9 @@
     include('../../php/connect2DB.php');
     include('../../php/query_products.php');
     include('../../php/global_configs.php');
+    include('../../php/csrf_token.php');
+
+    csrf_token_validate_request();
 
     $querystring = '';
 ?>
@@ -55,6 +58,7 @@
                     echo '<button id="page" name="page" value="'.$i.'">'.($i+1).'</button>';
                 }
                 echo '
+                        <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
                     </form>
                 </div>
                 ';
@@ -94,6 +98,7 @@
                                 '.ucfirst($p['name']).' '.$p['unitPrice'].' €
                                 <form action="catalog.php?'.$querystring.'" method="post">
                                     <input type="submit" name="+'.$p['ID'].'" value="+">
+                                    <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
                                 ');
 
                             if(isset($_POST['+'.$p['ID']])){

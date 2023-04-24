@@ -1,18 +1,22 @@
-<!-- L'utente si scollega se viene ricevuta una query "?exit" -->
 <?php
+    // L'utente si scollega se viene ricevuta una query "?exit"
+    
     include('login_timeout.php');
     include('../../php/connect2DB.php');
     include('../../php/global_configs.php');
+    include('../../php/csrf_token.php');
+
+    csrf_token_validate_request();
 
     // Restituisce il record di un utente
     // prende la password in chiaro
     function query_user($dbconn, $usr, $pwd){
         // Ricordati di convertire la stringa esadecimale in binario (il confronto dello statement è binario)!
-        $pwd = hex2bin(hash('sha256', $pwd));
+        $hash = hex2bin(hash('sha256', $usr.$pwd));
 
         $user_exist = "select * from customers where email = (?) and binary password = (?);";
         $stmt = mysqli_prepare($dbconn, $user_exist);
-        $stmt->bind_param("ss", $usr, $pwd);
+        $stmt->bind_param("ss", $usr, $hash);
         $stmt->execute();
         $res = $stmt->get_result();
         // $stmt->close();
@@ -29,20 +33,28 @@
         $usr = $htmlpurifier->purify($_POST['register_name']);
         $pwd = $htmlpurifier->purify($_POST['register_password']);
 
+        // Valido formato email
+        if(filter_var($usr, FILTER_VALIDATE_EMAIL) === false){
+            echo "<script>alert('Impossibile continuare, email non è in un formato valido!')</script>";
+        }
         // Controllo che l'utente non esista già
-        if(mysqli_num_rows(query_user($dbconn, $usr, $pwd)) == 1){
+        else if(mysqli_num_rows(query_user($dbconn, $usr, $pwd)) == 1){
             echo "<script>alert('Impossibile continuare, l\'utente è già registrato!')</script>";
         } else{
-            $pwd = hex2bin(hash('sha256', $pwd));
-            $stmt->bind_param("ss", $usr, $pwd);
+            echo $pwd.$usr.'<br>';
+            $hash = hex2bin(hash('sha256', $usr.$pwd));
+            $stmt->bind_param("ss", $usr, $hash);
             $stmt->execute();
             $stmt->free_result();
-            echo "<script>alert('Registrazione avvenuta correttamente!')</script>";
+            // echo "<script>alert('Registrazione avvenuta correttamente!')</script>";
+
+            // Loggo automaticamente l'utente
+            $_POST['login_name'] = $_POST['register_name'];
+            $_POST['login_password'] = $_POST['register_password'];
         }
 
         unset($_POST['register_name']);
         unset($_POST['register_password']);
-        $_SESSION['connected'] = TRUE;
     }
 ?>
 
@@ -67,6 +79,7 @@
             $_SESSION['connected'] = TRUE;
             $_SESSION['email'] = $usr;
             $_SESSION['ID'] = $q_user_data['ID'];
+            csrf_token_new();
 
             unset($_POST['login_name']);
             unset($_POST['login_password']);
@@ -102,6 +115,7 @@
                         <input name="register_name" placeholder="Nome" type="text"><br/><br/>
                         <input name="register_password" placeholder="Password" type="password"><br/><br/>
                         <input value="Registrati" type="submit"><input value="Pulisci" type="reset">
+                        <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token']; ?>>
                     </form>
                 </li>
             </div>
@@ -120,6 +134,7 @@
                         <input name="login_password" placeholder="Password" type="password"><br/><br/>
                         Rimani connesso<input name="keep_me_in" type="checkbox"><br/><br/>
                         <input value="Accedi" type="submit"><input value="Pulisci" type="reset">
+                        <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token']; ?>>
                     </form>
                 </li>
             </div>

@@ -3,8 +3,10 @@
     include('../../php/connect2DB.php');
     include('../../php/query_products.php');
     include('../../php/global_configs.php');
+    include('../../php/csrf_token.php');
 
     isset($_SESSION['email']) or die('E\' necessario accedere per poter utilizzare questa funzionalità!');
+    csrf_token_validate_request();
 
     $querystring = '';
 ?>

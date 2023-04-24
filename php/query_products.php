@@ -4,7 +4,7 @@
     // Questo evita di sovraccaricare il dbms
     // Restituisce il set di risultati o false in caso di errore
     // Gli id partono da 0 (LIMIT x,y)
-    function query_products($dbms, $start_id, $n_ids, $order_by=''){;
+    function query_products($dbms, $start_id, $n_ids, $order_by=''){
         $sel_prods = "";
         // Ordine dei prodotti
         switch($order_by){
@@ -62,6 +62,10 @@
     // Restituisce il set di risultati o false in caso di errore
     // Gli id partono da 1
     function query_products_in($dbms, $ids){
+        if(count($ids) === 0){
+            return false;
+        }
+
         $sel_prods = "select * from products where id in (?".str_repeat(",?", count($ids) -1) .");";
         $stmt = mysqli_prepare($dbms, $sel_prods);
         $stmt->bind_param(str_repeat("i", count($ids)), ...$ids);

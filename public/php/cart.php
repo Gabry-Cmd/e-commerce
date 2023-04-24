@@ -3,56 +3,60 @@
     include('../../php/query_products.php');
     include('../../php/connect2DB.php');
     include('../../php/global_configs.php');
+    include('../../php/csrf_token.php');
 
-    isset($_SESSION['email']) or die('E\' necessario accedere per poter utilizzare questa funzionalità!');
+    csrf_token_validate_request();
 ?>
 
 <?php
-    if(!isset($_SESSION['userCart']) or isset($_POST['payed'])){
-        if(isset($_POST['payed'])){
-            // Devo inserire un'ordine
-            // L'ordine ha dei dettagli d'ordine associati, uno per ogni prodotto selezionato
-            // L'ordine è associato a un cliente
-            // L'ID del cliente è nella sessione, inserisco l'ordine,
-            // poi ottengo gli id dei prodotti dal carrello, ottengo i prodotti dal DB sapendo gli id,
-            // infine inserisco i dettagli d'ordine per ogni prodotto acquistato
-            $current_date = date("Y-m-d");
-            $order = '
-                INSERT INTO orders (date, id_customer) VALUES (\''.$current_date.'\', '.$_SESSION['ID'].');
-            ';
-            // Cosa succede se ID va in overflow?
-            $get_order_id = '
-                SELECT ID from orders where date=\''.$current_date.'\' AND id_customer='.$_SESSION['ID'].' ORDER BY ID DESC;
-            ';
+    if(!isset($_SESSION['userCart'])){
+        $_SESSION['userCart'] = [];
+    }
+    if(isset($_POST['payed'])){
+        isset($_SESSION['email']) or die('E\' necessario accedere per poter utilizzare questa funzionalità!');
+        
+        // Devo inserire un'ordine
+        // L'ordine ha dei dettagli d'ordine associati, uno per ogni prodotto selezionato
+        // L'ordine è associato a un cliente
+        // L'ID del cliente è nella sessione, inserisco l'ordine,
+        // poi ottengo gli id dei prodotti dal carrello, ottengo i prodotti dal DB sapendo gli id,
+        // infine inserisco i dettagli d'ordine per ogni prodotto acquistato
+        $current_date = date("Y-m-d");
+        $order = '
+            INSERT INTO orders (date, id_customer) VALUES (\''.$current_date.'\', '.$_SESSION['ID'].');
+        ';
+        // Cosa succede se ID va in overflow?
+        $get_order_id = '
+            SELECT ID from orders where date=\''.$current_date.'\' AND id_customer='.$_SESSION['ID'].' ORDER BY ID DESC;
+        ';
 
-            mysqli_query($dbconn, $order) or die('<script>alert("Impossibile completare l\'ordine, error=1")</script>');
-            $order_id = (mysqli_query($dbconn, $get_order_id))->fetch_assoc()['ID'] or die('<script>alert("Impossibile completare l\'ordine, error=2")</script>');
+        mysqli_query($dbconn, $order) or die('<script>alert("Impossibile completare l\'ordine, error=1")</script>');
+        $order_id = (mysqli_query($dbconn, $get_order_id))->fetch_assoc()['ID'] or die('<script>alert("Impossibile completare l\'ordine, error=2")</script>');
 
-            // Ottengo gli id dei prodotti nel carrello
-            $ids = [];
-            for($i=0; $i<query_num_prods($dbconn); $i++){
-                if(isset($_SESSION['userCart'][$i])){
-                    if($_SESSION['userCart'][$i] > 0){
-                        $ids[count($ids)] = $i;
-                    }
+        // Ottengo gli id dei prodotti nel carrello
+        $ids = [];
+        for($i=0; $i<query_num_prods($dbconn); $i++){
+            if(isset($_SESSION['userCart'][$i])){
+                if($_SESSION['userCart'][$i] > 0){
+                    $ids[count($ids)] = $i;
                 }
             }
+        }
 
-            $prods = query_products_in($dbconn, $ids);
+        $prods = query_products_in($dbconn, $ids);
 
-            for($i=0; $i<count($ids); $i++){
-                $p = $prods->fetch_assoc();
-                $order_detail = '
-                    INSERT INTO orderdetails (id_product, id_order, unitPrice, quantity, discount) VALUES ('.$ids[$i].', '.$order_id.', '.$p['unitPrice'].', '.$_SESSION['userCart'][$ids[$i]].', 0.0);
+        for($i=0; $i<count($ids); $i++){
+            $p = $prods->fetch_assoc();
+            $order_detail = '
+                INSERT INTO orderdetails (id_product, id_order, unitPrice, quantity, discount) VALUES ('.$ids[$i].', '.$order_id.', '.$p['unitPrice'].', '.$_SESSION['userCart'][$ids[$i]].', 0.0);
+            ';
+            if(mysqli_query($dbconn, $order_detail) == false){
+                echo mysqli_error($dbconn).'<br>';
+                $del_order = '
+                    DELETE FROM orders WHERE ID='.$order_id.' AND date=\''.$current_date.'\' and id_customer='.$_SESSION['ID'].'
                 ';
-                if(mysqli_query($dbconn, $order_detail) == false){
-                    echo mysqli_error($dbconn).'<br>';
-                    $del_order = '
-                        DELETE FROM orders WHERE ID='.$order_id.' AND date=\''.$current_date.'\' and id_customer='.$_SESSION['ID'].'
-                    ';
-                    mysqli_query($dbconn, $del_order);
-                    echo $order_detail.'<br>';
-                }
+                mysqli_query($dbconn, $del_order);
+                echo $order_detail.'<br>';
             }
         }
 
@@ -97,7 +101,7 @@
                                         '.$products[$i][1].' '.$products[$i][3].' €
                                         <form action="cart.php" method="post">
                                             <input type="submit" name="+'.$id.'" value="+">
-                                            <input type="hidden" value="1">
+                                            <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
                                         </form>');
 
                                         if(isset($_POST['+'.$id])){
@@ -111,7 +115,7 @@
                                 
                                         echo('<form action="cart.php" method="post">
                                                 <input type="submit" name="-'.$id.'" value="-">
-                                                <input type="hidden" value="1">
+                                                <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
                                             </form>
                                     </div>');
                                 }
@@ -145,6 +149,7 @@
                             <option value="bitcoin">Bitcoin</option>
                         </select>
                         <button id="payed" name="payed">Paga ora</button>
+                        <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token'] ?>>
                     </form>
                 </div>
             </li>
