@@ -66,7 +66,7 @@
 
             <?php
                 // Prendo solo i prodotti necessari alla pagina
-                $products = query_products($dbconn, $page*$prods_per_page, $prods_per_page, $order_by);
+                $products = query_products($dbconn, $page*$prods_per_page, $prods_per_page, $order_by, $filtro_ricerca);
                 $nProducts = mysqli_num_rows($products);
 
                 echo "<div>";
@@ -77,22 +77,6 @@
                         echo "<td>";
                         if($i*$prods_cols + $j < $nProducts){                         
                             $p = mysqli_fetch_assoc($products);
-
-                            // Mostro i risultati simili per distanza di Levenshtein
-                            $matches = false;
-                            if($filtro_ricerca != ""){
-                                $filtro_ricerca = strtolower($filtro_ricerca);
-                                $words = explode(" ", $p['name']);
-
-                                for($k=0; $k<count($words); $k++){
-                                    if(levenshtein($filtro_ricerca, $words[$k]) <= 2){
-                                        $matches = true;
-                                    }
-                                }
-                            }
-
-                            if(!$matches and $filtro_ricerca != "")
-                                continue;
 
                             echo('<img src=/products/'.$p['ID'].'.png width="30%" height="30%" />
                                 '.ucfirst($p['name']).' '.$p['unitPrice'].' €
