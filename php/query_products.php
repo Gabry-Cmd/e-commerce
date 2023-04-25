@@ -4,22 +4,30 @@
     // Questo evita di sovraccaricare il dbms
     // Restituisce il set di risultati o false in caso di errore
     // Gli id partono da 0 (LIMIT x,y)
-    function query_products($dbms, $start_id, $n_ids, $order_by=''){
+    function query_products($dbms, $start_id, $n_ids, $order_by='', $levenshtein_filter=''){
         $sel_prods = "";
+        $products = "";
+
+        if($levenshtein_filter != ''){
+            $products = "(SELECT * FROM products WHERE LEVENSHTEIN(products.name,'".$levenshtein_filter."')<3) AS products";
+        }else{
+            $products = "products";
+        }
+
         // Ordine dei prodotti
         switch($order_by){
             case 'price_asc':
-                $sel_prods = 'select * from products order by unitPrice asc limit ?, ?;';
+                $sel_prods = 'select * from '.$products.' order by unitPrice asc limit ?, ?';
                 break;
             case 'price_desc':
-                $sel_prods = 'select * from products order by unitPrice desc limit ?, ?;';
+                $sel_prods = 'select * from '.$products.' order by unitPrice desc limit ?, ?';
                 break;
 
             case 'popularity_desc':
                 $sel_prods = 'SELECT pop_desc.ID, pop_desc.qta, products.name, products.quantityPerUnit, products.unitPrice, products.unitsInStock FROM
                 (
                     (SELECT t2.ID, IFNULL(qta, 0) as qta FROM
-                        (SELECT ID,0 FROM products) AS t2
+                        (SELECT ID,0 FROM '.$products.') AS t2
                         LEFT JOIN
                         (SELECT products.ID, SUM(quantity) as qta FROM
                             (
@@ -29,7 +37,7 @@
                                     )
                                     INNER JOIN orderdetails ON(orders.ID=orderdetails.id_order)
                                 )
-                                INNER JOIN products ON(products.ID=orderdetails.id_product)
+                                INNER JOIN '.$products.' ON(products.ID=orderdetails.id_product)
                             )
                             GROUP BY id_product
                         ) AS t1
@@ -38,10 +46,9 @@
                     LEFT JOIN products ON (pop_desc.ID=products.ID)
                 ) ORDER BY qta DESC LIMIT ?, ?';
                 break;
-            
-            // todo: Ordina per popolarità
+
             default:
-                $sel_prods = 'select * from products limit ?, ?;';
+                $sel_prods = 'select * from '.$products.' limit ?, ?';
                 break;
         }
 
