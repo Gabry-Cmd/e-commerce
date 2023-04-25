@@ -101,45 +101,51 @@
         <link rel="stylesheet" href="../css/horiz_list.css">
         <link rel="stylesheet" href="../css/vert_divider.css">
         <link rel="stylesheet" href="../css/form_boxes.css">
+        <link rel="stylesheet" href="../css/fill_empty_space.css">
         <title>Azienda & Logo</title>
     </head>
-    <body style="margin: 0px; overflow: hidden;">
-        <?php
-            include('../../php/header.php');
-        ?>
-        <ul class="horiz_list">
-            <div>
-                <li>
-                    <div style="font-size: 200%; text-align: center;">Registrati</div>
-                    <form class="box_outer" action="login.php" method="post">
-                        <input name="register_name" placeholder="Nome" type="text"><br/><br/>
-                        <input name="register_password" placeholder="Password" type="password"><br/><br/>
-                        <input value="Registrati" type="submit"><input value="Pulisci" type="reset">
-                        <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token']; ?>>
-                    </form>
-                </li>
-            </div>
-            
-            <div class="divider" id="divider">
-            </div>
-            <!-- <script>
-                document.getElementById("divider").setAttribute("style", "height: "+window.innerHeight+"px");
-            </script> -->
+    <body class="box" style="overflow: hidden;">
+        <div class="row header">
+            <?php
+                include('../../php/header.php');
+            ?>
+        </div>
+        <div class="row content">
+            <ul class="horiz_list">
+                <div>
+                    <li>
+                        <div style="font-size: 200%; text-align: center;">Registrati</div>
+                        <form class="box_outer" action="login.php" method="post">
+                            <input name="register_name" placeholder="Nome" type="text"><br/><br/>
+                            <input name="register_password" placeholder="Password" type="password"><br/><br/>
+                            <input value="Registrati" type="submit"><input value="Pulisci" type="reset">
+                            <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token']; ?>>
+                        </form>
+                    </li>
+                </div>
+                
+                <div class="divider" id="divider">
+                </div>
+                <!-- <script>
+                    document.getElementById("divider").setAttribute("style", "height: "+window.innerHeight+"px");
+                </script> -->
 
-            <div>
-                <li>
-                    <div style="font-size: 200%; text-align: center;">Accedi</div>
-                    <form class="box_outer" action="login.php" method="post">
-                        <input name="login_name" placeholder="Nome" type="text"><br/><br/>
-                        <input name="login_password" placeholder="Password" type="password"><br/><br/>
-                        Rimani connesso<input name="keep_me_in" type="checkbox"><br/><br/>
-                        <input value="Accedi" type="submit"><input value="Pulisci" type="reset">
-                        <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token']; ?>>
-                    </form>
-                </li>
-            </div>
-        </ul>
-
-        <?php include('../../php/footer.php') ?>
+                <div>
+                    <li>
+                        <div style="font-size: 200%; text-align: center;">Accedi</div>
+                        <form class="box_outer" action="login.php" method="post">
+                            <input name="login_name" placeholder="Nome" type="text"><br/><br/>
+                            <input name="login_password" placeholder="Password" type="password"><br/><br/>
+                            Rimani connesso<input name="keep_me_in" type="checkbox"><br/><br/>
+                            <input value="Accedi" type="submit"><input value="Pulisci" type="reset">
+                            <input type="hidden" name="csrf_token" value=<?php echo $_SESSION['csrf_token']; ?>>
+                        </form>
+                    </li>
+                </div>
+            </ul>
+        </div>
+        <div class="row footer">
+            <?php include('../../php/footer.php') ?>
+        </div>
     </body>
 </html>

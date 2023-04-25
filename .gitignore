@@ -6,3 +6,7 @@ composer.json
 composer.lock
 vendor/
 .VSCodeCounter/
+docker/
+certificate/
+csrf_dummy_website.sh
+logstalgia.sh

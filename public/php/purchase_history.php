@@ -16,13 +16,17 @@
     <head>
         <link rel="stylesheet" href="../css/header.css">
         <link rel="stylesheet" href="../css/searchbar.css">
+        <link rel="stylesheet" href="../css/fill_empty_space.css">
+        <link rel="stylesheet" href="../css/purchase_history.css">
         <title>Azienda & Logo</title>
     </head>
-    <body style="margin: 0px;">
-        <?php
-            include('../../php/header.php');
-        ?>
-        <div>
+    <body class="box">
+        <div class="row header">
+            <?php
+                include('../../php/header.php');
+            ?>
+        </div>
+        <div class="row content item">
             <?php
                 $orders_meta = query_purchase_history_orders($dbconn);
                 $rows = query_purchase_history($dbconn);
@@ -30,19 +34,22 @@
                     $tot = 0;
                     
                     echo "<div align='center'>";
-                    echo 'Ordine #'.$orders_meta[$id][0].' ('.$orders_meta[$id][1].'):<br>';
+                    echo '<div>Ordine #'.($id+1).'<br>('.$orders_meta[$id][1].'):</div>';
+                    echo '<div>';
                     for($i=0; $i<count($rows); $i++){
                         if($rows[$i][0] == $orders_meta[$id][0]){
                             echo "<a href='/php/catalog.php?search=".$rows[$i][4]."'>".$rows[$i][4]."</a>".' x '.$rows[$i][3].' da '.$rows[$i][2].' €<br>';
                             $tot += $rows[$i][2];
                         }
                     }
-                    echo '<b>Totale: '.$tot.' €</b>';
+                    echo '</div>';
+                    echo '<div><b>Totale: '.$tot.' €</b></div>';
                     echo "</div><br>";
                 }
-            ?>
+            ?>  
         </div>
-
-        <?php include('../../php/footer.php') ?>
+        <div class="row footer">
+            <?php include('../../php/footer.php') ?>
+        </div>
     </body>
 </html>

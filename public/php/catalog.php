@@ -15,13 +15,16 @@
     <head>
         <link rel="stylesheet" href="../css/header.css">
         <link rel="stylesheet" href="../css/searchbar.css">
+        <link rel="stylesheet" href="../css/fill_empty_space.css">
         <title>Azienda & Logo</title>
     </head>
-    <body style="margin: 0px;">
-        <?php
-            include('../../php/header.php');
-        ?>
-        <div>
+    <body class="box">
+        <div class="row header">
+            <?php
+                include('../../php/header.php');
+            ?>
+        </div>
+        <div class="row content">
             <?php
                 $filtro_ricerca = '';
                 if(isset($_GET["search"])){
@@ -70,6 +73,7 @@
                 $nProducts = mysqli_num_rows($products);
 
                 echo "<div>";
+                echo '<form action="catalog.php?'.$querystring.'" method="post">';
                 echo "<table>";
                 for($i=0; $i<$prods_rows; $i++){
                     echo "<tr>";
@@ -80,9 +84,8 @@
 
                             echo('<img src=/products/'.$p['ID'].'.png width="30%" height="30%" />
                                 '.ucfirst($p['name']).' '.$p['unitPrice'].' €
-                                <form action="catalog.php?'.$querystring.'" method="post">
+                                <div>
                                     <input type="submit" name="+'.$p['ID'].'" value="+">
-                                    <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
                                 ');
 
                             if(isset($_POST['+'.$p['ID']])){
@@ -98,7 +101,7 @@
                             echo($_SESSION['userCart'][$p['ID']]);
                     
                             echo('<input type="submit" name="-'.$p['ID'].'" value="-">
-                                </form>');
+                            </div>');
                         }
                         echo "</td>";
                     }
@@ -109,10 +112,13 @@
                 }
                 $products->free_result();
                 echo "</table>";
+                echo '<input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
+                    </form>';
                 echo "</div>";
             ?>
         </div>
-
-        <?php include('../../php/footer.php') ?>
+        <div class="row footer">
+            <?php include('../../php/footer.php') ?>
+        </div>
     </body>
 </html>

@@ -1,0 +1,38 @@
+/*
+Il codice divide la pagina in tre sezioni o righe.
+L'header e il footer possono stringersi, mentre il content può crescere e stringersi
+per riempire gli spazzi vuoti.
+Nota come html, body e flexbox prendando il 100% dello spazio.
+
+Fonte:
+https://stackoverflow.com/questions/90178/make-a-div-fill-the-height-of-the-remaining-screen-space
+*/
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.box .row {
+    width: 100%;
+    border: 0px;
+}
+
+.box .row.header {
+    flex: 0 1 auto;
+}
+
+.box .row.content {
+    flex: 1 1 auto;
+}
+
+.box .row.footer {
+    flex: 0 1 40px;
+}

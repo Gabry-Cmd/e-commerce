@@ -1,5 +1,10 @@
 .divider {
     border-left: 1px solid #000000;
+    border-bottom: 1px solid #000000;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    /* flex-direction: column; */
+    flex-basis: auto;    
     /* height: 100%; */
     /* border-top: 100% solid #000000; */
 }
