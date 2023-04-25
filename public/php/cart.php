@@ -101,8 +101,7 @@
                                         '.$products[$i][1].' '.$products[$i][3].' €
                                         <form action="cart.php" method="post">
                                             <input type="submit" name="+'.$id.'" value="+">
-                                            <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
-                                        </form>');
+                                        ');
 
                                         if(isset($_POST['+'.$id])){
                                             $_SESSION['userCart'][$id] += 1;
@@ -113,7 +112,7 @@
                                         }
                                         echo($_SESSION['userCart'][$id]);
                                 
-                                        echo('<form action="cart.php" method="post">
+                                        echo('
                                                 <input type="submit" name="-'.$id.'" value="-">
                                                 <input type="hidden" name="csrf_token" value='.$_SESSION['csrf_token'].'>
                                             </form>
