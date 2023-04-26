@@ -16,7 +16,7 @@
     $dbhost = "localhost";
     $dbuser = "www-data";
     $dbpass = "";
-    $dbname = "ecommerce";
+    $dbname = "donnyco";
     $dbsock = "/run/mysqld/mysqld.sock";
     
     $dbconn = mysqli_connect($dbhost, $dbuser, $dbpass, null, null, $dbsock) or die("Connessione FALLITA\n");
