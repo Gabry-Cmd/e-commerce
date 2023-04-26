@@ -147,9 +147,6 @@
                 
                 <li class="divider" id="divider">
                 </li>
-                <!-- <script>
-                    document.getElementById("divider").setAttribute("style", "height: "+window.innerHeight+"px");
-                </script> -->
                 <li>
                     <div>
                         <?php
