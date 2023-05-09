@@ -19,7 +19,6 @@
         $i = 0;
         foreach($_SESSION['userCart'] as $prod){
             if($prod > 0){
-                $ids[count($ids)] = $i;
                 $i++;
             }
         }
